@@ -59,24 +59,14 @@ const ProductTable = ({ products, handleEdit, handleDelete }) => {
       <table className="min-w-full bg-white">
         <thead>
           <tr>
-            <th
-              className="py-2 cursor-pointer"
-              onClick={() => requestSort("id")}
-            >
-              ID {getSortArrow("id")}
-            </th>
+            <th className="py-2 cursor-pointer">ID</th>
             <th
               className="py-2 cursor-pointer"
               onClick={() => requestSort("name")}
             >
               Name {getSortArrow("name")}
             </th>
-            <th
-              className="py-2 cursor-pointer"
-              onClick={() => requestSort("description")}
-            >
-              Description {getSortArrow("description")}
-            </th>
+            <th className="py-2 cursor-pointer">Description</th>
             <th
               className="py-2 cursor-pointer"
               onClick={() => requestSort("price")}
