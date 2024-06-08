@@ -54,7 +54,6 @@ const ProductDashboard = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (form.name && form.description && form.price && form.stock_quantity) {
-      const response = await axios.post("http://localhost:4000/products", form);
       setForm({ name: "", description: "", price: "", stock_quantity: "" });
     }
   };
