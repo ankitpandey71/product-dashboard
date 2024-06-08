@@ -1,21 +1,89 @@
-import React from "react";
+import React, { useState } from "react";
 
 const ProductTable = ({ products, handleEdit, handleDelete }) => {
+  const [currentPage, setCurrentPage] = useState(1);
+  const [productsPerPage] = useState(5);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [sortConfig, setSortConfig] = useState({
+    key: "id",
+    direction: "ascending",
+  });
+
+  // Pagination Logic
+  const indexOfLastProduct = currentPage * productsPerPage;
+  const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
+  const currentProducts = products
+    .filter((product) =>
+      product.name.toLowerCase().includes(searchQuery.toLowerCase())
+    )
+    .sort((a, b) => {
+      if (a[sortConfig.key] < b[sortConfig.key]) {
+        return sortConfig.direction === "ascending" ? -1 : 1;
+      }
+      if (a[sortConfig.key] > b[sortConfig.key]) {
+        return sortConfig.direction === "ascending" ? 1 : -1;
+      }
+      return 0;
+    })
+    .slice(indexOfFirstProduct, indexOfLastProduct);
+
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+  const requestSort = (key) => {
+    let direction = "ascending";
+    if (sortConfig.key === key && sortConfig.direction === "ascending") {
+      direction = "descending";
+    }
+    setSortConfig({ key, direction });
+  };
+
   return (
     <div className="overflow-x-auto">
+      <input
+        type="text"
+        placeholder="Search by name..."
+        value={searchQuery}
+        onChange={(e) => setSearchQuery(e.target.value)}
+        className="mb-4 p-2 border rounded"
+      />
       <table className="min-w-full bg-white">
         <thead>
           <tr>
-            <th className="py-2">ID</th>
-            <th className="py-2">Name</th>
-            <th className="py-2">Description</th>
-            <th className="py-2">Price</th>
-            <th className="py-2">Stock Quantity</th>
+            <th
+              className="py-2 cursor-pointer"
+              onClick={() => requestSort("id")}
+            >
+              ID
+            </th>
+            <th
+              className="py-2 cursor-pointer"
+              onClick={() => requestSort("name")}
+            >
+              Name
+            </th>
+            <th
+              className="py-2 cursor-pointer"
+              onClick={() => requestSort("description")}
+            >
+              Description
+            </th>
+            <th
+              className="py-2 cursor-pointer"
+              onClick={() => requestSort("price")}
+            >
+              Price
+            </th>
+            <th
+              className="py-2 cursor-pointer"
+              onClick={() => requestSort("stock_quantity")}
+            >
+              Stock Quantity
+            </th>
             <th className="py-2">Actions</th>
           </tr>
         </thead>
         <tbody>
-          {products.map((product) => (
+          {currentProducts.map((product) => (
             <tr key={product.id} className="border-t">
               <td className="py-2 px-4">{product.id}</td>
               <td className="py-2 px-4">{product.name}</td>
@@ -40,6 +108,22 @@ const ProductTable = ({ products, handleEdit, handleDelete }) => {
           ))}
         </tbody>
       </table>
+      <div className="flex justify-center mt-4">
+        <button
+          onClick={() => paginate(currentPage - 1)}
+          disabled={currentPage === 1}
+          className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-l"
+        >
+          Previous
+        </button>
+        <button
+          onClick={() => paginate(currentPage + 1)}
+          disabled={indexOfLastProduct >= products.length}
+          className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-r"
+        >
+          Next
+        </button>
+      </div>
     </div>
   );
 };
