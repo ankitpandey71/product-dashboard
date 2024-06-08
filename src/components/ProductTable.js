@@ -2,7 +2,7 @@ import React, { useState } from "react";
 
 const ProductTable = ({ products, handleEdit, handleDelete }) => {
   const [currentPage, setCurrentPage] = useState(1);
-  const [productsPerPage] = useState(5);
+  const [productsPerPage, setProductsPerPage] = useState(5); // Initial limit
   const [searchQuery, setSearchQuery] = useState("");
   const [sortConfig, setSortConfig] = useState({
     key: "id",
@@ -11,20 +11,24 @@ const ProductTable = ({ products, handleEdit, handleDelete }) => {
 
   const indexOfLastProduct = currentPage * productsPerPage;
   const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
-  const currentProducts = products
-    .filter((product) =>
-      product.name.toLowerCase().includes(searchQuery.toLowerCase())
-    )
-    .sort((a, b) => {
-      if (a[sortConfig.key] < b[sortConfig.key]) {
-        return sortConfig.direction === "ascending" ? -1 : 1;
-      }
-      if (a[sortConfig.key] > b[sortConfig.key]) {
-        return sortConfig.direction === "ascending" ? 1 : -1;
-      }
-      return 0;
-    })
-    .slice(indexOfFirstProduct, indexOfLastProduct);
+  const filteredProducts = products.filter((product) =>
+    product.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const sortedProducts = filteredProducts.sort((a, b) => {
+    if (a[sortConfig.key] < b[sortConfig.key]) {
+      return sortConfig.direction === "ascending" ? -1 : 1;
+    }
+    if (a[sortConfig.key] > b[sortConfig.key]) {
+      return sortConfig.direction === "ascending" ? 1 : -1;
+    }
+    return 0;
+  });
+
+  const currentProducts = sortedProducts.slice(
+    indexOfFirstProduct,
+    indexOfLastProduct
+  );
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
@@ -56,6 +60,18 @@ const ProductTable = ({ products, handleEdit, handleDelete }) => {
         onChange={(e) => setSearchQuery(e.target.value)}
         className="mb-4 p-2 border rounded"
       />
+      <div className="mb-4 flex justify-end">
+        <label className="mr-2">Items per page:</label>
+        <select
+          value={productsPerPage}
+          onChange={(e) => setProductsPerPage(Number(e.target.value))}
+          className="p-2 border rounded"
+        >
+          <option value={5}>5</option>
+          <option value={10}>10</option>
+          <option value={20}>20</option>
+        </select>
+      </div>
       <table className="min-w-full bg-white">
         <thead>
           <tr>
@@ -73,12 +89,7 @@ const ProductTable = ({ products, handleEdit, handleDelete }) => {
             >
               Price {getSortArrow("price")}
             </th>
-            <th
-              className="py-2 cursor-pointer"
-              onClick={() => requestSort("stock_quantity")}
-            >
-              Stock Quantity {getSortArrow("stock_quantity")}
-            </th>
+            <th className="py-2 cursor-pointer">Stock Quantity</th>
             <th className="py-2">Actions</th>
           </tr>
         </thead>
@@ -108,22 +119,24 @@ const ProductTable = ({ products, handleEdit, handleDelete }) => {
           ))}
         </tbody>
       </table>
-      <div className="flex justify-center mt-4">
-        <button
-          onClick={() => paginate(currentPage - 1)}
-          disabled={currentPage === 1}
-          className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-l"
-        >
-          Previous
-        </button>
-        <button
-          onClick={() => paginate(currentPage + 1)}
-          disabled={indexOfLastProduct >= products.length}
-          className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-r"
-        >
-          Next
-        </button>
-      </div>
+      {filteredProducts.length > productsPerPage && (
+        <div className="flex justify-center mt-4">
+          <button
+            onClick={() => paginate(currentPage - 1)}
+            disabled={currentPage === 1}
+            className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-l"
+          >
+            Previous
+          </button>
+          <button
+            onClick={() => paginate(currentPage + 1)}
+            disabled={indexOfLastProduct >= filteredProducts.length}
+            className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-r"
+          >
+            Next
+          </button>
+        </div>
+      )}
     </div>
   );
 };
