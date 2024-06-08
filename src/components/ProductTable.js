@@ -9,7 +9,6 @@ const ProductTable = ({ products, handleEdit, handleDelete }) => {
     direction: "ascending",
   });
 
-  // Pagination Logic
   const indexOfLastProduct = currentPage * productsPerPage;
   const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
   const currentProducts = products
@@ -37,6 +36,17 @@ const ProductTable = ({ products, handleEdit, handleDelete }) => {
     setSortConfig({ key, direction });
   };
 
+  const getSortArrow = (key) => {
+    if (sortConfig.key === key) {
+      if (sortConfig.direction === "ascending") {
+        return "↑";
+      } else if (sortConfig.direction === "descending") {
+        return "↓";
+      }
+    }
+    return "";
+  };
+
   return (
     <div className="overflow-x-auto">
       <input
@@ -53,31 +63,31 @@ const ProductTable = ({ products, handleEdit, handleDelete }) => {
               className="py-2 cursor-pointer"
               onClick={() => requestSort("id")}
             >
-              ID
+              ID {getSortArrow("id")}
             </th>
             <th
               className="py-2 cursor-pointer"
               onClick={() => requestSort("name")}
             >
-              Name
+              Name {getSortArrow("name")}
             </th>
             <th
               className="py-2 cursor-pointer"
               onClick={() => requestSort("description")}
             >
-              Description
+              Description {getSortArrow("description")}
             </th>
             <th
               className="py-2 cursor-pointer"
               onClick={() => requestSort("price")}
             >
-              Price
+              Price {getSortArrow("price")}
             </th>
             <th
               className="py-2 cursor-pointer"
               onClick={() => requestSort("stock_quantity")}
             >
-              Stock Quantity
+              Stock Quantity {getSortArrow("stock_quantity")}
             </th>
             <th className="py-2">Actions</th>
           </tr>
