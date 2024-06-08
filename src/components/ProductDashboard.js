@@ -94,7 +94,7 @@ const ProductDashboard = () => {
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-3xl font-bold mb-4">Product Dashboard</h1>
+      <h1 className="text-3xl font-bold mb-4 bg-blue-400">Product Dashboard</h1>
       <ProductForm
         form={form}
         handleInputChange={handleInputChange}
