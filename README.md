@@ -1,3 +1,29 @@
+# Product Dashboard
+
+## Requirements
+- Node.js
+- npm
+
+## Setup
+
+### Backend
+1. Navigate to the `backend` folder:
+   ```bash
+   cd backend
+
+## Install dependencies:
+    npm install
+
+## Run the server:
+  node server.js
+
+
+
+
+
+
+   
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
