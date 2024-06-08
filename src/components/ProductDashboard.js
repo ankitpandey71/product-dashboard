@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import io from "socket.io-client";
+import ProductForm from "./ProductForm";
+import ProductTable from "./ProductTable";
 
 const socket = io("http://localhost:4000");
 
@@ -54,6 +56,7 @@ const ProductDashboard = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (form.name && form.description && form.price && form.stock_quantity) {
+      await axios.post("http://localhost:4000/products", form);
       setForm({ name: "", description: "", price: "", stock_quantity: "" });
     }
   };
@@ -92,96 +95,17 @@ const ProductDashboard = () => {
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-3xl font-bold mb-4">Product Dashboard</h1>
-      <form
-        onSubmit={form.id ? handleUpdate : handleSubmit}
-        className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4"
-      >
-        <div className="mb-4">
-          <input
-            name="name"
-            placeholder="Name"
-            value={form.name}
-            onChange={handleInputChange}
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            required
-          />
-        </div>
-        <div className="mb-4">
-          <input
-            name="description"
-            placeholder="Description"
-            value={form.description}
-            onChange={handleInputChange}
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            required
-          />
-        </div>
-        <div className="mb-4">
-          <input
-            name="price"
-            placeholder="Price"
-            type="number"
-            value={form.price}
-            onChange={handleInputChange}
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            required
-          />
-        </div>
-        <div className="mb-4">
-          <input
-            name="stock_quantity"
-            placeholder="Stock Quantity"
-            type="number"
-            value={form.stock_quantity}
-            onChange={handleInputChange}
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            required
-          />
-        </div>
-        <button
-          type="submit"
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-        >
-          {form.id ? "Update" : "Add"}
-        </button>
-      </form>
-      <table className="min-w-full bg-white">
-        <thead>
-          <tr>
-            <th className="py-2">ID</th>
-            <th className="py-2">Name</th>
-            <th className="py-2">Description</th>
-            <th className="py-2">Price</th>
-            <th className="py-2">Stock Quantity</th>
-            <th className="py-2">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {products.map((product) => (
-            <tr key={product.id} className="border-t">
-              <td className="py-2 px-4">{product.id}</td>
-              <td className="py-2 px-4">{product.name}</td>
-              <td className="py-2 px-4">{product.description}</td>
-              <td className="py-2 px-4">{product.price}</td>
-              <td className="py-2 px-4">{product.stock_quantity}</td>
-              <td className="py-2 px-4">
-                <button
-                  onClick={() => handleEdit(product.id)}
-                  className="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-1 px-2 rounded mr-2"
-                >
-                  Edit
-                </button>
-                <button
-                  onClick={() => handleDelete(product.id)}
-                  className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded"
-                >
-                  Delete
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <ProductForm
+        form={form}
+        handleInputChange={handleInputChange}
+        handleSubmit={handleSubmit}
+        handleUpdate={handleUpdate}
+      />
+      <ProductTable
+        products={products}
+        handleEdit={handleEdit}
+        handleDelete={handleDelete}
+      />
     </div>
   );
 };
