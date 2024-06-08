@@ -2,7 +2,7 @@ import React, { useState } from "react";
 
 const ProductTable = ({ products, handleEdit, handleDelete }) => {
   const [currentPage, setCurrentPage] = useState(1);
-  const [productsPerPage, setProductsPerPage] = useState(5); // Initial limit
+  const [productsPerPage, setProductsPerPage] = useState(5);
   const [searchQuery, setSearchQuery] = useState("");
   const [sortConfig, setSortConfig] = useState({
     key: "id",
